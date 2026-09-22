@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài tập về nhà – Chủ thể của nền kinh tế</title>
+<style>
+  :root{
+    --primary:#4f46e5;
+    --primary-dark:#3730a3;
+    --accent:#06b6d4;
+    --ok:#16a34a;
+    --no:#dc2626;
+    --warn:#d97706;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --border:#e2e8f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:linear-gradient(160deg,#eef2ff 0%,#f1f5f9 40%,#ecfeff 100%);
+    color:var(--text);
+    line-height:1.65;
+    padding:24px 14px 60px;
+  }
+  .container{max-width:960px;margin:0 auto;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
+    color:#fff;
+    border-radius:20px;
+    padding:28px 26px;
+    box-shadow:0 12px 30px rgba(79,70,229,.28);
+    margin-bottom:26px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;right:-60px;top:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:rgba(255,255,255,.12);
+  }
+  header h1{font-size:1.55rem;line-height:1.35;margin-bottom:8px;}
+  header p{opacity:.95;font-size:.95rem;}
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    padding:22px 22px 26px;
+    margin-bottom:22px;
+    box-shadow:0 4px 18px rgba(15,23,42,.07);
+    border:1px solid var(--border);
+  }
+  .card > h2{
+    font-size:1.15rem;
+    color:var(--primary-dark);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:2px dashed var(--border);
+  }
+  .badge{
+    background:var(--primary);
+    color:#fff;
+    font-size:.75rem;
+    padding:3px 10px;
+    border-radius:20px;
+    font-weight:600;
+    letter-spacing:.3px;
+    white-space:nowrap;
+  }
+  .sub{color:var(--muted);font-size:.92rem;margin-bottom:12px;}
+
+  /* ---------- INFO BOX ---------- */
+  .info{
+    background:#f8fafc;
+    border-left:4px solid var(--accent);
+    border-radius:0 10px 10px 0;
+    padding:14px 16px;
+    margin:12px 0 18px;
+    font-size:.95rem;
+    color:#334155;
+  }
+  .info strong{color:var(--primary-dark);}
+
+  /* ---------- QUESTION ---------- */
+  .q{
+    padding:16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:14px;
+    transition:.25s;
+    background:#fff;
+  }
+  .q:hover{border-color:#c7d2fe;box-shadow:0 4px 14px rgba(79,70,229,.08);}
+  .q .q-text{font-weight:600;margin-bottom:12px;}
+  .opt{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:9px 12px;
+    border-radius:9px;
+    cursor:pointer;
+    transition:.18s;
+    border:1px solid transparent;
+    font-size:.95rem;
+  }
+  .opt:hover{background:#f1f5f9;}
+  .opt input{margin-top:5px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;}
+  .opt.right{background:#dcfce7;border-color:#86efac;}
+  .opt.wrong{background:#fee2e2;border-color:#fca5a5;}
+
+  .btn{
+    border:none;cursor:pointer;font-family:inherit;font-weight:600;
+    padding:9px 20px;border-radius:9px;font-size:.9rem;
+    transition:.2s;
+  }
+  .btn-check{background:var(--primary);color:#fff;}
+  .btn-check:hover{background:var(--primary-dark);transform:translateY(-1px);}
+  .btn-ghost{background:#eef2ff;color:var(--primary-dark);}
+  .btn-ghost:hover{background:#e0e7ff;}
+
+  .feedback{font-size:.9rem;font-weight:600;margin-top:10px;min-height:0;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.no{color:var(--no);}
+  .feedback.warn{color:var(--warn);}
+
+  /* ---------- TRUE / FALSE ---------- */
+  .tf-row{
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:12px 14px;border-radius:11px;
+    border:1px solid var(--border);margin-bottom:10px;
+    transition:.25s;
+  }
+  .tf-row .tf-text{flex:1 1 380px;font-size:.95rem;}
+  .tf-btns{display:flex;gap:8px;}
+  .tf-btn{
+    width:42px;height:38px;border-radius:9px;
+    border:1.5px solid var(--border);background:#fff;
+    font-weight:700;cursor:pointer;font-family:inherit;
+    color:var(--muted);transition:.18s;font-size:.95rem;
+  }
+  .tf-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .tf-btn.picked-right{background:var(--ok);border-color:var(--ok);color:#fff;}
+  .tf-btn.picked-wrong{background:var(--no);border-color:var(--no);color:#fff;}
+  .tf-row .feedback{flex:1 1 100%;margin-top:2px;}
+
+  /* ---------- SUGGEST ---------- */
+  .suggest{
+    display:none;margin-top:12px;padding:14px 16px;
+    background:#f0fdf4;border-left:4px solid var(--ok);
+    border-radius:0 10px 10px 0;font-size:.93rem;color:#14532d;
+  }
+  .suggest.show{display:block;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+
+  textarea{
+    width:100%;min-height:90px;padding:12px;
+    border:1.5px solid var(--border);border-radius:10px;
+    font-family:inherit;font-size:.94rem;resize:vertical;
+    outline:none;transition:.2s;background:#fcfcfd;
+  }
+  textarea:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.12);}
+
+  ul.clean{list-style:none;}
+  ul.clean li{padding-left:26px;position:relative;margin-bottom:8px;font-size:.95rem;}
+  ul.clean li::before{
+    content:"✔";position:absolute;left:0;color:var(--accent);font-weight:700;
+  }
+
+  .tip{
+    background:#fffbeb;border:1px solid #fde68a;border-radius:10px;
+    padding:12px 15px;font-size:.9rem;color:#78350f;margin-top:12px;
+  }
+
+  .scorebar{
+    display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;
+    background:#eef2ff;border-radius:12px;padding:12px 16px;
+    font-size:.92rem;font-weight:600;color:var(--primary-dark);
+  }
+  .scorebar span{background:#fff;padding:4px 14px;border-radius:20px;}
+
+  /* ---------- MINDMAP CỐ ĐỊNH ---------- */
+  .mindmap-preview{
+    text-align:center;
+    animation:fade .35s ease;
+  }
+  .mindmap-preview img{
+    max-width:100%;
+    max-height:620px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    box-shadow:0 8px 24px rgba(15,23,42,.12);
+    background:#fff;
+    cursor:zoom-in;
+    transition:.25s;
+  }
+  .mindmap-preview img:hover{
+    transform:scale(1.01);
+    box-shadow:0 12px 32px rgba(79,70,229,.22);
+  }
+  .mindmap-caption-note{
+    color:var(--muted);
+    font-size:.85rem;
+    font-style:italic;
+    margin-top:10px;
+  }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.92);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    cursor:zoom-out;
+    animation:fade .25s ease;
+  }
+  .lightbox.show{display:flex;}
+  .lightbox img{
+    max-width:95vw;
+    max-height:92vh;
+    border-radius:12px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    background:#fff;
+  }
+  .lightbox-close{
+    position:absolute;
+    top:20px;right:24px;
+    background:#fff;
+    color:var(--primary-dark);
+    border:none;
+    width:42px;height:42px;
+    border-radius:50%;
+    font-size:1.4rem;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:.2s;
+  }
+  .lightbox-close:hover{
+    background:var(--primary);
+    color:#fff;
+    transform:rotate(90deg);
+  }
+
+  @media(max-width:600px){
+    header h1{font-size:1.25rem;}
+    .card{padding:18px 15px 20px;}
+    .tf-row{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <h1>📘 Bài tập về nhà – Chủ thể của nền kinh tế</h1>
+    <p>Chủ đề: “Người tiêu dùng thông minh trong thời đại thương mại điện tử” &nbsp;•&nbsp; Hoạt động trải nghiệm – Giáo dục Kinh tế &amp; Pháp luật</p>
+  </header>
+
+  <!-- ================= SƠ ĐỒ TƯ DUY (CỐ ĐỊNH) ================= -->
+  <section class="card" id="mindmap-card">
+    <h2><span class="badge">SẢN PHẨM</span> Sơ đồ tư duy: Các chủ thể của nền kinh tế</h2>
+    <p class="sub"><em>Sơ đồ tư duy về các chủ thể của nền kinh tế</em></p>
+
+    <div class="mindmap-preview">
+      <img id="mindmap-img"
+           src="https://i.postimg.cc/8P87sZJk/IMG-1146.png"
+           alt="Sơ đồ tư duy các chủ thể của nền kinh tế"
+           onclick="openMindmapFull()">
+      <p class="mindmap-caption-note">🖱️ Bấm vào ảnh để xem ở chế độ toàn màn hình</p>
+    </div>
+
+    <div class="tip" style="margin-top:14px;">
+      <strong>💡 Nội dung:</strong> Sơ đồ thể hiện <b>4 chủ thể chính</b> của nền kinh tế Việt Nam:
+      Nhà nước – Doanh nghiệp/Hộ sản xuất – Hộ gia đình/Người tiêu dùng – Chủ thể trung gian
+      (ngân hàng, sàn TMĐT, siêu thị…), kèm vai trò, chức năng và ví dụ thực tế.
+    </div>
+  </section>
+
+  <!-- ================= PHẦN 1 ================= -->
+  <section class="card">
+    <h2><span class="badge">PHẦN 1</span> Thiết kế Infographic / Poster số / Video tuyên truyền</h2>
+    <p class="sub"><em>(Làm theo bàn – mỗi bàn 1 bài)</em></p>
+    <div class="info">
+      <strong>Chủ đề:</strong> “Người tiêu dùng thông minh trong thời đại thương mại điện tử”<br>
+      <strong>Công cụ:</strong> Canva, PowerPoint, Gemini, ChatGPT…<br>
+      <strong>Sản phẩm:</strong> Infographic / Poster số / Video tuyên truyền.
+    </div>
+
+    <p style="font-weight:600;margin-bottom:8px;">Gợi ý nội dung cần có:</p>
+    <ul class="clean">
+      <li>Thực trạng mua sắm trực tuyến của giới trẻ hiện nay.</li>
+      <li>Lợi ích: tiện lợi, giá đa dạng, tiếp cận hàng hoá toàn cầu.</li>
+      <li>Rủi ro: hàng giả – hàng nhái, lừa đảo trực tuyến, lộ thông tin cá nhân, “bẫy” giảm giá ảo.</li>
+      <li>Nguyên tắc vàng: <em>“Chậm lại một chút – Kiểm tra thật kỹ”</em>.</li>
+      <li>Bộ tiêu chí người tiêu dùng thông minh (xem bảng dưới).</li>
+      <li>Số đường dây nóng bảo vệ người tiêu dùng, địa chỉ khiếu nại.</li>
+    </ul>
+
+    <div class="tip">
+      <strong>💡 6 tiêu chí “người tiêu dùng thông minh” gợi ý:</strong><br>
+      1️⃣ Chọn sàn TMĐT và người bán uy tín (có xác thực, đánh giá tốt).<br>
+      2️⃣ So sánh giá – đọc kỹ mô tả – xem ảnh thật từ người mua trước.<br>
+      3️⃣ Kiểm tra nguồn gốc, hạn sử dụng, tem chống hàng giả.<br>
+      4️⃣ Bảo mật thông tin cá nhân, không chia sẻ OTP, mã CVV.<br>
+      5️⃣ Thanh toán an toàn, ưu tiên thanh toán khi nhận hàng (COD).<br>
+      6️⃣ Lưu hoá đơn, ảnh chụp đơn hàng để khiếu nại khi cần.
+    </div>
+  </section>
+
+  <!-- ================= PHẦN 2 ================= -->
+  <section class="card">
+    <h2><span class="badge">PHẦN 2</span> Sơ đồ tư duy: Các chủ thể của nền kinh tế</h2>
+    <p class="sub"><em>(Thực hiện cá nhân tại nhà – dùng Canva, ChatGPT hoặc Gemini)</em></p>
+    <div class="info">
+      <strong>Trung tâm sơ đồ:</strong> CÁC CHỦ THỂ CỦA NỀN KINH TẾ<br>
+      <strong>4 nhánh chính:</strong> Nhà nước – Doanh nghiệp/Hộ sản xuất – Hộ gia đình/Người tiêu dùng – Chủ thể trung gian (ngân hàng, sàn TMĐT, siêu thị…)
+    </div>
+    <p style="font-weight:600;margin-bottom:8px;">Mỗi nhánh cần thể hiện:</p>
+    <ul class="clean">
+      <li><b>Vai trò</b> trong nền kinh tế.</li>
+      <li><b>Chức năng</b> cụ thể (sản xuất – tiêu dùng – phân phối – quản lý).</li>
+      <li><b>Ví dụ thực tế</b> gần gũi (cửa hàng tạp hoá, siêu thị, Shopee, Ngân hàng Nhà nước…).</li>
+      <li><b>Mối quan hệ</b> giữa các chủ thể (cung – cầu, dòng tiền, dòng hàng hoá).</li>
+    </ul>
+    <div class="tip">
+      <strong>🤖 Mẹo dùng AI:</strong> Có thể gõ prompt: <em>“Vẽ sơ đồ tư duy dạng mindmap về 4 chủ thể của nền kinh tế Việt Nam, mỗi nhánh gồm vai trò, chức năng và ví dụ thực tế, trình bày dạng cây phân cấp.”</em> Sau đó chép sang Canva để trang trí.
+    </div>
+  </section>
+
+  <!-- ================= NHIỆM VỤ 1 ================= -->
+  <section class="card">
+    <h2><span class="badge">NHIỆM VỤ 1</span> Đọc thông tin và trả lời câu hỏi</h2>
+
+    <!-- ---- Thông tin 1 ---- -->
+    <div class="info">
+      <strong>Thông tin 1:</strong> Bạn V là học sinh THPT. Hằng tuần V phụ giúp bố mẹ làm đồ mây tre đan để bán. Những dịp có hội chợ do địa phương tổ chức, V cùng bố mẹ mang các sản phẩm của gia đình đến hội chợ để bán. Nhận thức được trách nhiệm của bản thân với tư cách là một chủ thể của nền kinh tế, V thường xuyên bàn bạc với bố mẹ cách sản xuất những sản phẩm mây tre đanản đẹp mắt, phù hợp với nhu cầu và giá cả ph phù hợp với người tiêu dùng.
+    </divẩ>
+
+    <div class="q" data-correctm="A">
+      <div class="q-text">Câu, 1: Trong thông tin trên, b khố mẹ bạn V vừa tham gia nền kinh tế với tư cách là chủ thể trung gian vừa là chủ thể</div>
+      <label class="opt"><input type="radio" name="q1" value="A"><span><b>A.</b> sản xuất.</span></label>
+      <label class="opt"><input type="radio" name="q1" value="B"><span><b>B.</b> Nhà nước.</span></label>
+      <label class="opt"><input type="radio" name="q1" value="C"><span><b>C.</b> tiêu dùng.</span></label>
+      <label class="opt"><input type="radio" name="q1" value="D"><span><b>D.</b> tiêu thụ.</span></label>
+      <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-correct="C">
+      <div class="q-text">Câu 2: Hoạt động nào dưới đây của bố mẹ bạn V đã góp phần đưa sản phẩm đến tay người tiêu dùng?</div>
+      <label class="opt"><input type="radio" name="q2" value="A"><span><b>A.</b> Làm đồ mây tre đan bán.</span></label>
+      <label class="opt"><input type="radio" name="q2" value="B"><span><b>B.</b> Sản phẩm đẹp và phù hợp.</span></label>
+      <label class="opt"><input type="radio" name="q2" value="C"><span><b>C.</b> Giới thiệu sản phẩm tại hội chợ.</span></label>
+      <label class="opt"><input type="radio" name="q2" value="D"><span><b>D.</b> Giá cả phù hợp người tiêu dùng.</span></label>
+      <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- ---- Thông tin 2 ---- -->
+    <div class="info">
+      <strong>Thông tin 2:</strong> Do một số nước có chính sách hạn chế nhập khẩu nông sản của Việt Nam dẫn đến việc tiêu thụ nông sản của người nông dân gặp nhiều khó khăn. Nắm bắt được thông tin người trồng cây ăn quả ở địa phương X có nguy cơ phải vứt bỏ hàng trăm tấn hoa quả do không thể bán ra thị trường, doanh nghiệp T đã đứng ra “giải cứu” nông dân, bên cạnh việc kêu gọi nhân viên trong công ty, doanh nghiệp đã kết nối với các siêu thị để bao tiêu một phần nông sản, khuyến mại cho các khách hàng mua số lượng lớn. Nhờ các hoạt động này mà một phần lớn nông sản của địa phương X đã được bán kịp thời, hạn chế tối đa thiệt hại cho bà con.
+    </div>
+
+    <div class="q" data-correct="D">
+      <div class="q-text">Câu 1: Hoạt động nào dưới đây của doanh nghiệp T <u>không</u> góp phần trực tiếp vào việc giúp nông dân tiêu thụ sản phẩm?</div>
+      <label class="opt"><input type="radio" name="q3" value="A"><span><b>A.</b> Kết nối với các siêu thị.</span></label>
+      <label class="opt"><input type="radio" name="q3" value="B"><span><b>B.</b> Kêu gọi nhân viên mua hàng.</span></label>
+      <label class="opt"><input type="radio" name="q3" value="C"><span><b>C.</b> Khuyến mại cho khách hàng.</span></label>
+      <label class="opt"><input type="radio" name="q3" value="D"><span><b>D.</b> Ép giá đối với người nông dân.</span></label>
+      <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-correct="C">
+      <div class="q-text">Câu 2: Doanh nghiệp T đóng vai trò là chủ thể</div>
+      <label class="opt"><input type="radio" name="q4" value="A"><span><b>A.</b> sản xuất.</span></label>
+      <label class="opt"><input type="radio" name="q4" value="B"><span><b>B.</b> tiêu dùng.</span></label>
+      <label class="opt"><input type="radio" name="q4" value="C"><span><b>C.</b> trung gian.</span></label>
+      <label class="opt"><input type="radio" name="q4" value="D"><span><b>D.</b> nhà nước.</span></label>
+      <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- ---- Thông tin 3 ---- -->
+    <div class="info">
+      <strong>Thông tin 3:</strong> Với chuỗi cửa hàng và trung tâm mua sắm khắp cả nước, hệ thống siêu thị A đã và đang làm cầu nối giữa người sản xuất và người tiêu dùng, đảm bảo mang đến cho người dân những sản phẩm chất lượng tốt nhất. Bên cạnh đó, hệ thống siêu thị còn đưa ra hàng loạt các chương trình giới thiệu suyến mãi, chính sách chăm sóc khách hàng chu đáo, tạo sự an tâm và tin tưởng cho người tiêu dùng.
+    </div>
+    <p class="sub">👉 Chọn <b>Đ</b> (Đúng) hoặc <b>S</b> (Sai) cho mỗi nhận định:</p>
+
+    <div class="tf-row" data-correct="D">
+      <div class="tf-text"><b>A.</b> Siêu thị A là chủ thể trung gian trong hoạt động sản xuất kinh doanh.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="D">
+      <div class="tf-text"><b>B.</b> Siêu thị A đã làm tốt hoạt động phân phối sản phẩm.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="D">
+      <div class="tf-text"><b>C.</b> Các việc làm của siêu thị A vừa thể hiện trách nhiệm của chủ thể kinh tế vừa thể hiện trách nhiệm xã hội của doanh nghiệp.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="S">
+      <div class="tf-text"><b>D.</b> Trong nền kinh tế thị trường, mô hình siêu thị gắn liền với vai trò của chủ thể nhà nước.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- ---- Thông tin 4 ---- -->
+    <div class="info">
+      <strong>Thông tin 4:</strong> Doanh nghiệp H chuyên về lĩnh vực bán máy tính. Ngoài mục tiêu tìm kiếm lợi nhuận, doanh nghiệp này thường xuyên có các chương trình giảm giá cho người tiêu dùng là học sinh, sinh viên. Hằng năm, vào thời điểm khai giảng năm học mới, doanh nghiệp kết nối với các đơn vị tài chính uy tín để đưa ra chính sách bán hàng trả góp, bán hàng giảm giá cho các bạn sinh viên có hoàn cảnh khó khăn nhưng có thành tích tốt trong học tập.
+    </div>
+    <p class="sub">👉 Chọn <b>Đ</b> (Đúng) hoặc <b>S</b> (Sai) cho mỗi nhận định:</p>
+
+    <div class="tf-row" data-correct="S">
+      <div class="tf-text"><b>A.</b> Doanh nghiệp H vừa là chủ thể sản xuất vừa là chủ thể trung gian.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="D">
+      <div class="tf-text"><b>B.</b> Các đơn vị tài chính uy tín mà doanh nghiệp H kết nối cũng có vai trò là các chủ thể trung gian trong các hoạt động kinh tế.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="S">
+      <div class="tf-text"><b>C.</b> Việc nhiều sinh viên được mua máy tính với lãi suất 0 đồng thể hiện vai trò quản lý nền kinh tế của chủ thể nhà nước.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="tf-row" data-correct="D">
+      <div class="tf-text"><b>D.</b> Doanh nghiệp H vừa thực hiện tốt vai trò của chủ thể kinh doanh vừa thực hiện tốt trách nhiệm xã hội của mình.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+        <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="scorebar">
+      <span id="score">Điểm trắc nghiệm: 0 / 12</span>
+      <span id="progress">Đã làm: 0 / 12</span>
+    </div>
+  </section>
+
+  <!-- ================= NHIỆM VỤ 3 ================= -->
+  <section class="card">
+    <h2><span class="badge">NHIỆM VỤ 3</span> Nhận xét việc thực hiện trách nhiệm công dân của các chủ thể kinh tế</h2>
+    <p class="sub"><em>Thảo luận cặp đôi – đọc trường hợp và đưa ra nhận xét.</em></p>
+
+    <div class="q">
+      <div class="q-text">1/ Anh V đã tổ chức hoạt động sản xuất kinh doanh để tạo việc làm, thu nhập cho bản thân và thể hiện trách nhiệm công dân khi tham gia hoạt động kinh tế như thế nào?</div>
+      <textarea placeholder="Viết nhận xét của em ở đây..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        <b>Gợi ý trả lời:</b><br>
+        • Anh V đã chủ động tổ chức hoạt động sản xuất – kinh doanh, tạo việc làm và thu nhập cho bản thân, cho người lao động → góp phần phát triển kinh tế gia đình và địa phương.<br>
+        • Thực hiện đúng pháp luật về đăng ký kinh doanh, nộp thuế, bảo vệ môi trường, bảo đảm quyền lợi người lao động.<br>
+        • Sản xuất hàng hoá chất lượng, giá cả hợp lý, không làm hàng giả – hàng nhái → tôn trọng người tiêu dùng.<br>
+        • Tích cực tham gia các hoạt động xã hội, chia sẻ với cộng đồng → thể hiện trách nhiệm xã hội của người công dân – chủ thể kinh tế.
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-text">2/ Em có suy nghĩ gì từ câu chuyện lập nghiệp của anh V?</div>
+      <textarea placeholder="Viết suy nghĩ của em ở đây..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        <b>Gợi ý trả lời:</b><br>
+        • Khâm phục tinh thần dám nghĩ, dám làm, không ngại khó khăn của anh V.<br>
+        • Bài học: muốn khởi nghiệp thành công cần có kiến thức, kỹ năng, sự kiên trì và đạo đức kinh doanh.<br>
+        • Là học sinh, em cần học tập tốt, rèn luyện kỹ năng, biết quý trọng đồng tiền và lao động chân chính.<br>
+        • Mỗi công dân đều có thể trở thành chủ thể kinh tế tích cực ngay từ những việc nhỏ nhất.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NHIỆM VỤ 4 ================= -->
+  <section class="card">
+    <h2><span class="badge">NHIỆM VỤ 4</span> Xử lý tình huống</h2>
+    <p class="sub"><em>Thảo luận cặp đôi – đọc tình huống và đưa ra cách xử lý.</em></p>
+
+    <div class="q">
+      <div class="q-text">
+        1. Nghe tin nông dân một số nơi đang lao đao vì hàng ngàn tấn nông sản không tiêu thụ được, T rủ H ra siêu thị mua 5 kg củ cải về ăn dần nhưng bị ngăn lại: “Nhà chỉ có hai mẹ con, cậu mua nhiều củ cải làm gì?”.<br>
+        <span style="color:var(--primary-dark)">Nếu em là T thì em sẽ nói gì với H?</span>
+      </div>
+      <textarea placeholder="Cách xử lý của em..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡:</ Xem gợi ý</button>
+      <div class="suggest">
+        <b>Gợi ý xử lýb><br>
+        “Mua củ cải không chỉ để nhà mình ăn, mà còn là cách mình chung tay giúp bà con nông dân tiêu thụ nông sản. Mỗi cân củ cải mình mua đi là một phần công sức của bà con không bị bỏ đi. Mình có thể chế biến thành nhiều món (dưa muối, củ cải kho, nộm…), bảo quản trong tủ lạnh, hoặc chia sẻ bớt cho họ hàng, hàng xóm cùng ăn.”<br>
+        <b>Lưu ý:</b> Vẫn nên mua lượng hợp lý, tránh mua quá nhiều gây lãng phí – vì tiêu dùng thông minh là tiêu dùng có trách nhiệm, không phải tiêu dùng tràn lan.
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-text">
+        2. Chị P vui mừng báo tin cho K biết có công ty môi giới việc làm trên mạng Internet giới thiệu chị làm nhân viên bán hàng của siêu thị X với mức lệ phí môi giới 300 000 đồng.<br>
+        <span style="color:var(--primary-dark)">Nếu là K, em sẽ nói gì với chị P?</span>
+      </div>
+      <textarea placeholder="Cách xử lý của em..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        <b>Gợi ý xử lý:</b><br>
+        “Chị ơi, chị hãy bình tĩnh và tìm hiểu thật kỹ trước khi nộp tiền. Có rất nhiều công ty môi giới việc làm ‘ma’ lợi dụng nhu cầu tìm việc để lừa đảo.”<br>
+        • Kiểm tra tư cách pháp nhân của công ty: giấy phép kinh doanh, địa chỉ thật, số điện thoại cố định.<br>
+        • Xác minh trực tiếp với siêu thị X xem có thật đang tuyển dụng và có thuê công ty môi giới này không.<br>
+        • Không nộp bất kỳ khoản phí nào trước khi ký hợp đồng lao động chính thức và nhận việc.<br>
+        • Không cung cấp CCCD, số tài khoản ngân hàng, mã OTP cho người lạ.<br>
+        • Nên tìm việc qua Trung tâm dịch vụ việc làm của Nhà nước hoặc các kênh tuyển dụng uy tín.<br>
+        • Nếu phát hiện dấu hiệu lừa đảo → báo ngay cho gia đình và cơ quan công an.
+      </div>
+    </div>
+  </section>
+
+  <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:26px;">
+    ✏️ Hoàn thành bài tập – Chúc em học tốt!
+  </p>
+
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="lightbox" id="mindmap-lightbox" onclick="closeMindmapFull()">
+  <button class="lightbox-close" onclick="closeMindmapFull()" aria-label="Đóng">✕</button>
+  <img id="lightbox-img" src="" alt="Sơ đồ tư duy phóng to" onclick="event.stopPropagation()">
+</div>
+
+<script>
+  /* ============================================================
+     XỬ LÝ CÂU HỎI TRẮC NGHIỆM
+     ============================================================ */
+  let answered = {};
+
+  function checkMCQ(btn){
+    const box = btn.closest('.q');
+    const correct = box.dataset.correct;
+    const picked  = box.querySelector('input[type=radio]:checked');
+    const fb      = box.querySelector('.feedback');
+
+    if(!picked){
+      fb.textContent = '⚠️ Em chưa chọn đáp án nào!';
+      fb.className = 'feedback warn';
+      return;
+    }
+
+    box.querySelectorAll('.opt').forEach(o => o.classList.remove('right','wrong'));
+
+    const key = box.querySelector('input').name;
+    const isRight = (picked.value === correct);
+
+    if(isRight){
+      picked.closest('.opt').classList.add('right');
+      fb.textContent = '✅ Chính xác!';
+      fb.className = 'feedback ok';
+    } else {
+      picked.closest('.opt').classList.add('wrong');
+      box.querySelectorAll('.opt').forEach(o => {
+        if(o.querySelector('input').value === correct) o.classList.add('right');
+      });
+      fb.textContent = '❌ Chưa đúng. Đáp án đúng là ' + correct + '.';
+      fb.className = 'feedback no';
+    }
+
+    answered[key] = isRight;
+    updateScore();
+  }
+
+  /* ============================================================
+     XỬ LÝ CÂU HỎI ĐÚNG / SAI
+     ============================================================ */
+  function checkTF(btn, val){
+    const row = btn.closest('.tf-row');
+    const correct = row.dataset.correct;
+    const fb = row.querySelector('.feedback');
+
+    row.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('picked-right','picked-wrong'));
+
+    const isRight = (val === correct);
+    btn.classList.add(isRight ? 'picked-right' : 'picked-wrong');
+
+    if(isRight){
+      fb.textContent = '✅ Đúng!';
+      fb.className = 'feedback ok';
+    } else {
+      fb.textContent = '❌ Sai. Đáp án đúng là: ' + (correct === 'D' ? 'Đúng' : 'Sai') + '.';
+      fb.className = 'feedback no';
+    }
+
+    if(!row.dataset.id){
+      row.dataset.id = 'tf_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    }
+    answered[row.dataset.id] = isRight;
+    updateScore();
+  }
+
+  /* ============================================================
+     TÍNH ĐIỂM
+     ============================================================ */
+  function updateScore(){
+    const done = Object.keys(answered).length;
+    const right = Object.values(answered).filter(Boolean).length;
+    document.getElementById('score').textContent = 'Điểm trắc nghiệm: ' + right + ' / 12';
+    document.getElementById('progress').textContent = 'Đã làm: ' + done + ' / 12';
+  }
+
+  /* ============================================================
+     GỢI Ý TRẢ LỜI
+     ============================================================ */
+  function toggleSuggest(btn){
+    const s = btn.nextElementSibling;
+    s.classList.toggle('show');
+    btn.textContent = s.classList.contains('show') ? '🙈 Ẩn gợi ý' : '💡 Xem gợi ý';
+  }
+
+  /* ============================================================
+     LIGHTBOX XEM ẢNH SƠ ĐỒ TƯ DUY
+     ============================================================ */
+  function openMindmapFull(){
+    const lb = document.getElementById('mindmap-lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    lbImg.src = document.getElementById('mindmap-img').src;
+    lb.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMindmapFull(){
+    document.getElementById('mindmap-lightbox').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeMindmapFull();
+  });
+
+  /* ============================================================
+     KHỞI TẠO
+     ============================================================ */
+  updateScore();
+</script>
+</body>
+</html>
