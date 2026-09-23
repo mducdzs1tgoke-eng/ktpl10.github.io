@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài tập về nhà – Chủ thể của nền kinh tế</title>
+<style>
+  :root{
+    --primary:#4f46e5; --primary-dark:#3730a3; --accent:#06b6d4;
+    --ok:#16a34a; --no:#dc2626; --warn:#d97706;
+    --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --card:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(160deg,#eef2ff 0%,#f1f5f9 40%,#ecfeff 100%);
+    color:var(--text); line-height:1.65; padding:24px 14px 60px;
+  }
+  .container{max-width:960px;margin:0 auto;}
+
+  header{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:#fff; border-radius:20px; padding:28px 26px;
+    box-shadow:0 12px 30px rgba(79,70,229,.28);
+    margin-bottom:26px; position:relative; overflow:hidden;
+  }
+  header::after{
+    content:""; position:absolute; right:-60px; top:-60px;
+    width:200px; height:200px; border-radius:50%;
+    background:rgba(255,255,255,.12);
+  }
+  header h1{font-size:1.55rem;line-height:1.35;margin-bottom:8px;}
+  header p{opacity:.95;font-size:.95rem;}
+
+  .card{
+    background:var(--card); border-radius:16px; padding:22px 22px 26px;
+    margin-bottom:22px; box-shadow:0 4px 18px rgba(15,23,42,.07);
+    border:1px solid var(--border);
+  }
+  .card > h2{
+    font-size:1.15rem; color:var(--primary-dark);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px; padding-bottom:10px;
+    border-bottom:2px dashed var(--border);
+  }
+  .badge{
+    background:var(--primary); color:#fff; font-size:.75rem;
+    padding:3px 10px; border-radius:20px; font-weight:600; white-space:nowrap;
+  }
+  .sub{color:var(--muted);font-size:.92rem;margin-bottom:12px;}
+
+  .info{
+    background:#f8fafc; border-left:4px solid var(--accent);
+    border-radius:0 10px 10px 0; padding:14px 16px;
+    margin:12px 0 18px; font-size:.95rem; color:#334155;
+  }
+  .info strong{color:var(--primary-dark);}
+
+  .q{
+    padding:16px; border:1px solid var(--border); border-radius:12px;
+    margin-bottom:14px; transition:.25s; background:#fff;
+  }
+  .q:hover{border-color:#c7d2fe;box-shadow:0 4px 14px rgba(79,70,229,.08);}
+  .q .q-text{font-weight:600;margin-bottom:12px;}
+  .opts{display:flex;flex-direction:column;gap:4px;}
+  .opt{
+    display:flex; align-items:flex-start; gap:10px;
+    padding:9px 12px; border-radius:9px; cursor:pointer;
+    transition:.18s; border:1px solid transparent; font-size:.95rem;
+  }
+  .opt:hover{background:#f1f5f9;}
+  .opt input{margin-top:5px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;}
+  .opt.right{background:#dcfce7;border-color:#86efac;}
+  .opt.wrong{background:#fee2e2;border-color:#fca5a5;}
+
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-weight:600;
+    padding:9px 20px; border-radius:9px; font-size:.9rem; transition:.2s;
+  }
+  .btn-check{background:var(--primary);color:#fff;}
+  .btn-check:hover{background:var(--primary-dark);transform:translateY(-1px);}
+  .btn-ghost{background:#eef2ff;color:var(--primary-dark);}
+  .btn-ghost:hover{background:#e0e7ff;}
+
+  .feedback{font-size:.9rem;font-weight:600;margin-top:10px;min-height:0;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.no{color:var(--no);}
+  .feedback.warn{color:var(--warn);}
+
+  .tf-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+    padding:12px 14px; border-radius:11px;
+    border:1px solid var(--border); margin-bottom:10px; transition:.25s;
+  }
+  .tf-row .tf-text{flex:1 1 380px;font-size:.95rem;}
+  .tf-btns{display:flex;gap:8px;}
+  .tf-btn{
+    width:42px; height:38px; border-radius:9px;
+    border:1.5px solid var(--border); background:#fff;
+    font-weight:700; cursor:pointer; font-family:inherit;
+    color:var(--muted); transition:.18s; font-size:.95rem;
+  }
+  .tf-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .tf-btn.picked-right{background:var(--ok);border-color:var(--ok);color:#fff;}
+  .tf-btn.picked-wrong{background:var(--no);border-color:var(--no);color:#fff;}
+  .tf-row .feedback{flex:1 1 100%;margin-top:2px;}
+
+  .suggest{
+    display:none; margin-top:12px; padding:14px 16px;
+    background:#f0fdf4; border-left:4px solid var(--ok);
+    border-radius:0 10px 10px 0; font-size:.93rem; color:#14532d;
+  }
+  .suggest.show{display:block;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+
+  textarea{
+    width:100%; min-height:90px; padding:12px;
+    border:1.5px solid var(--border); border-radius:10px;
+    font-family:inherit; font-size:.94rem; resize:vertical;
+    outline:none; transition:.2s; background:#fcfcfd;
+  }
+  textarea:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.12);}
+
+  ul.clean{list-style:none;}
+  ul.clean li{padding-left:26px;position:relative;margin-bottom:8px;font-size:.95rem;}
+  ul.clean li::before{content:"✔";position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+  .tip{
+    background:#fffbeb; border:1px solid #fde68a; border-radius:10px;
+    padding:12px 15px; font-size:.9rem; color:#78350f; margin-top:12px;
+  }
+
+  .scorebar{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    margin-top:14px; background:#eef2ff; border-radius:12px;
+    padding:12px 16px; font-size:.92rem; font-weight:600; color:var(--primary-dark);
+  }
+  .scorebar span{background:#fff;padding:4px 14px;border-radius:20px;}
+
+  .btn-shuffle{
+    margin-left:auto; background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff; padding:9px 18px; border-radius:20px;
+    display:inline-flex; align-items:center; gap:6px;
+    box-shadow:0 4px 12px rgba(217,119,6,.35);
+  }
+  .btn-shuffle:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(217,119,6,.5);}
+  .btn-history{
+    background:linear-gradient(135deg,#06b6d4,#0891b2);
+    color:#fff; padding:9px 18px; border-radius:20px;
+    display:inline-flex; align-items:center; gap:6px;
+    box-shadow:0 4px 12px rgba(8,145,178,.35);
+  }
+  .btn-history:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(8,145,178,.5);}
+
+  /* ===== QUIZ LOCKED ===== */
+  .quiz-locked{
+    pointer-events: none;
+    opacity: .35;
+    filter: blur(1px);
+    user-select: none;
+  }
+
+  /* ===== MINI TIMER (khi đang chạy) ===== */
+  .timer-mini{
+    position:fixed; top:20px; right:20px;
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff; padding:10px 18px; border-radius:50px;
+    font-size:1rem; font-weight:700;
+    display:none; align-items:center; gap:8px;
+    box-shadow:0 8px 25px rgba(15,23,42,.4);
+    z-index:1000;
+    border:2px solid rgba(255,255,255,.15);
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-mini.show{display:flex;}
+  .timer-mini.warning{
+    background:linear-gradient(135deg,#d97706,#f59e0b);
+    animation:warnPulse 1s infinite;
+  }
+  .timer-mini.danger{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    animation:dangerPulse .6s infinite;
+  }
+  @keyframes warnPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+  @keyframes dangerPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+
+  /* ============================================================
+     OVERLAY ĐỒNG HỒ GIỮA MÀN HÌNH
+     ============================================================ */
+  .timer-overlay{
+    position:fixed; inset:0;
+    background:rgba(15,23,42,.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    z-index:3000;
+    display:flex; justify-content:center; align-items:center;
+    padding:20px;
+    opacity:0; pointer-events:none;
+    transition:opacity .45s ease;
+  }
+  .timer-overlay.show{opacity:1;pointer-events:auto;}
+
+  .timer-overlay-box{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    border-radius:26px;
+    padding:44px 50px;
+    max-width:520px; width:100%;
+    text-align:center; color:#fff;
+    box-shadow:0 30px 90px rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.1);
+    transform:scale(.88);
+    transition:transform .45s cubic-bezier(.34,1.56,.64,1);
+    position:relative;
+    overflow:hidden;
+  }
+  .timer-overlay.show .timer-overlay-box{transform:scale(1);}
+
+  .timer-overlay-box::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(circle at 30% 20%,rgba(6,182,212,.18),transparent 55%),
+               radial-gradient(circle at 70% 80%,rgba(79,70,229,.18),transparent 55%);
+    pointer-events:none;
+  }
+  .timer-overlay-box > *{position:relative; z-index:1;}
+
+  .to-icon{
+    font-size:3.6rem;
+    display:block;
+    margin-bottom:14px;
+    animation:toFloat 3s ease-in-out infinite;
+  }
+  @keyframes toFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+  .to-title{
+    font-size:1.5rem;
+    margin-bottom:8px;
+    font-weight:800;
+    letter-spacing:.5px;
+  }
+  .to-subtitle{
+    font-size:.95rem;
+    opacity:.8;
+    margin-bottom:24px;
+  }
+
+  .timer-big{
+    font-size:5.5rem;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:6px;
+    line-height:1;
+    margin:20px 0 26px;
+    background:linear-gradient(135deg,#06b6d4,#22d3ee,#38bdf8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 4px 20px rgba(6,182,212,.4));
+  }
+
+  .btn-start-big{
+    background:linear-gradient(135deg,#16a34a,#059669);
+    color:#fff;
+    border:none;
+    padding:18px 60px;
+    border-radius:50px;
+    font-size:1.25rem;
+    font-weight:800;
+    letter-spacing:2px;
+    cursor:pointer;
+    font-family:inherit;
+    box-shadow:0 10px 30px rgba(22,163,74,.5);
+    transition:.25s;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .btn-start-big:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 15px 40px rgba(22,163,74,.7);
+  }
+  .btn-start-big:active{transform:translateY(-1px) scale(1);}
+
+  /* ===== END STATE ===== */
+  .score-final{
+    display:flex;
+    justify-content:center;
+    align-items:baseline;
+    gap:8px;
+    margin:14px 0 10px;
+    font-variant-numeric:tabular-nums;
+  }
+  .score-final .num{
+    font-size:5rem;
+    font-weight:900;
+    line-height:1;
+    background:linear-gradient(135deg,#fbbf24,#f59e0b);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 4px 20px rgba(245,158,11,.5));
+  }
+  .score-final .total{
+    font-size:1.8rem;
+    font-weight:700;
+    opacity:.6;
+  }
+
+  .evaluation{
+    display:inline-block;
+    padding:10px 24px;
+    border-radius:30px;
+    font-size:1.05rem;
+    font-weight:800;
+    letter-spacing:1px;
+    margin-bottom:16px;
+  }
+  .eval-perfect{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#78350f;box-shadow:0 6px 20px rgba(245,158,11,.5);}
+  .eval-excellent{background:linear-gradient(135deg,#22d3ee,#06b6d4);color:#083344;box-shadow:0 6px 20px rgba(6,182,212,.5);}
+  .eval-good{background:linear-gradient(135deg,#34d399,#10b981);color:#022c22;box-shadow:0 6px 20px rgba(16,185,129,.5);}
+  .eval-average{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#451a03;}
+  .eval-low{background:linear-gradient(135deg,#f87171,#ef4444);color:#450a0a;box-shadow:0 6px 20px rgba(239,68,68,.5);}
+
+  .eval-msg{
+    font-size:.95rem;
+    opacity:.85;
+    margin-bottom:20px;
+    line-height:1.6;
+  }
+
+  .badges-earned{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin-bottom:26px;
+  }
+  .achievement{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(255,255,255,.12);
+    border:1.5px solid rgba(255,255,255,.25);
+    border-radius:30px;
+    padding:7px 14px;
+    font-size:.85rem;
+    font-weight:700;
+    color:#fff;
+    animation:badgePop .5s ease backwards;
+  }
+  .achievement:nth-child(1){animation-delay:.1s;}
+  .achievement:nth-child(2){animation-delay:.2s;}
+  .achievement:nth-child(3){animation-delay:.3s;}
+  .achievement:nth-child(4){animation-delay:.4s;}
+  .achievement:nth-child(5){animation-delay:.5s;}
+  .achievement .ic{font-size:1.1rem;}
+  @keyframes badgePop{
+    from{opacity:0;transform:scale(.4) rotate(-12deg);}
+    to{opacity:1;transform:scale(1) rotate(0);}
+  }
+
+  .end-buttons{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn-end{
+    padding:13px 30px;
+    border-radius:50px;
+    border:none;
+    font-size:.98rem;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+    transition:.25s;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-restart{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff;
+    box-shadow:0 8px 25px rgba(217,119,6,.5);
+  }
+  .btn-restart:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(217,119,6,.7);}
+  .btn-history-end{
+    background:rgba(255,255,255,.15);
+    color:#fff;
+    border:1.5px solid rgba(255,255,255,.3);
+  }
+  .btn-history-end:hover{background:rgba(255,255,255,.25);}
+
+  /* ===== MODAL ===== */
+  .modal{
+    display:none; position:fixed; inset:0;
+    background:rgba(15,23,42,.7); backdrop-filter:blur(6px);
+    z-index:2000; justify-content:center; align-items:center;
+    padding:20px; animation:fade .25s ease;
+  }
+  .modal.show{display:flex;}
+  .modal-box{
+    background:#fff; border-radius:20px; max-width:720px;
+    width:100%; max-height:88vh; overflow-y:auto;
+    box-shadow:0 30px 80px rgba(0,0,0,.4);
+    animation:slideUp .35s ease;
+  }
+  @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+  .modal-header{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:#fff; padding:22px 26px;
+    display:flex; justify-content:space-between; align-items:center;
+    position:sticky; top:0; z-index:2;
+  }
+  .modal-header h3{font-size:1.15rem;display:flex;align-items:center;gap:10px;}
+  .modal-close{
+    background:rgba(255,255,255,.2); border:none; color:#fff;
+    width:36px; height:36px; border-radius:50%; font-size:1.1rem;
+    cursor:pointer; transition:.2s;
+  }
+  .modal-close:hover{background:rgba(255,255,255,.35);transform:rotate(90deg);}
+  .modal-body{padding:22px 26px 26px;}
+
+  .stat-cards{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px; margin-bottom:20px;
+  }
+  .stat-card{
+    background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+    border-radius:12px; padding:14px 16px; text-align:center;
+    border:1px solid #c7d2fe;
+  }
+  .stat-card .label{
+    font-size:.72rem; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;
+  }
+  .stat-card .value{font-size:1.5rem;font-weight:800;color:var(--primary-dark);line-height:1;}
+  .stat-card .value small{font-size:.9rem;opacity:.6;font-weight:600;}
+
+  .rank-title{
+    font-size:1rem; font-weight:700; color:var(--primary-dark);
+    margin:18px 0 10px; display:flex; align-items:center; gap:8px;
+    padding-bottom:8px; border-bottom:2px dashed var(--border);
+  }
+  .rank-table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  .rank-table th{
+    background:#f1f5f9; padding:10px 12px; text-align:left;
+    font-size:.78rem; text-transform:uppercase; color:var(--muted);
+    letter-spacing:.5px; border-bottom:2px solid var(--border);
+  }
+  .rank-table td{padding:11px 12px;border-bottom:1px solid var(--border);}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table tr:hover td{background:#f8fafc;}
+  .rank-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:50%;
+    font-weight:800; font-size:.85rem; color:#fff; background:var(--muted);
+  }
+  .rank-badge.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);}
+  .rank-badge.silver{background:linear-gradient(135deg,#cbd5e1,#94a3b8);}
+  .rank-badge.bronze{background:linear-gradient(135deg,#d97706,#b45309);}
+  .score-cell{font-weight:800;color:var(--primary);font-size:1rem;}
+  .score-cell.perfect{color:var(--ok);}
+  .score-cell.low{color:var(--warn);}
+  .time-cell{font-family:'Courier New',monospace;font-weight:600;color:#475569;}
+  .date-cell{font-size:.82rem;color:var(--muted);}
+  .medal{font-size:1.05rem;margin-right:4px;}
+
+  .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+  .empty-state .icon{font-size:3rem;opacity:.4;margin-bottom:12px;}
+
+  .modal-footer{
+    display:flex; gap:10px; justify-content:flex-end;
+    margin-top:20px; padding-top:16px; border-top:1px solid var(--border);
+  }
+  .btn-danger{
+    background:#fee2e2; color:var(--no); padding:9px 18px;
+    border-radius:9px; border:none; font-weight:600;
+    cursor:pointer; font-family:inherit; transition:.2s;
+  }
+  .btn-danger:hover{background:#fecaca;}
+
+  /* ===== MINDMAP / LIGHTBOX ===== */
+  .mindmap-preview{text-align:center;}
+  .mindmap-preview img{
+    max-width:100%; max-height:620px; border-radius:12px;
+    border:1px solid var(--border);
+    box-shadow:0 8px 24px rgba(15,23,42,.12);
+    background:#fff; cursor:zoom-in; transition:.25s;
+  }
+  .mindmap-preview img:hover{transform:scale(1.01);}
+  .mindmap-caption-note{color:var(--muted);font-size:.85rem;font-style:italic;margin-top:10px;}
+
+  .lightbox{
+    display:none; position:fixed; inset:0;
+    background:rgba(15,23,42,.92); z-index:9999;
+    justify-content:center; align-items:center;
+    padding:20px; cursor:zoom-out;
+  }
+  .lightbox.show{display:flex;}
+  .lightbox img{max-width:95vw;max-height:92vh;border-radius:12px;background:#fff;}
+  .lightbox-close{
+    position:absolute; top:20px; right:24px;
+    background:#fff; color:var(--primary-dark);
+    border:none; width:42px; height:42px; border-radius:50%;
+    font-size:1.4rem; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .q.shuffling, .tf-row.shuffling{animation:qShuffle .45s ease;}
+  .opts.shuffling .opt{animation:optShuffle .35s ease backwards;}
+  .opts.shuffling .opt:nth-child(2){animation-delay:.05s;}
+  .opts.shuffling .opt:nth-child(3){animation-delay:.1s;}
+  .opts.shuffling .opt:nth-child(4){animation-delay:.15s;}
+  @keyframes qShuffle{from{opacity:0;transform:translateY(-10px) scale(.97);}to{opacity:1;transform:none;}}
+  @keyframes optShuffle{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:none;}}
+
+  @media(max-width:600px){
+    header h1{font-size:1.25rem;}
+    .card{padding:18px 15px 20px;}
+    .tf-row{flex-direction:column;align-items:flex-start;}
+    .btn-shuffle,.btn-history{margin-left:0;flex:1;justify-content:center;}
+    .timer-overlay-box{padding:30px 24px;}
+    .timer-big{font-size:3.8rem;letter-spacing:3px;}
+    .score-final .num{font-size:3.6rem;}
+    .btn-start-big{padding:14px 40px;font-size:1.05rem;}
+    .timer-mini{top:12px;right:12px;padding:8px 14px;font-size:.9rem;}
+    .modal-body{padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= MINI TIMER (khi đang chạy) ================= -->
+<div class="timer-mini" id="timerMini">
+  <span>⏱️</span>
+  <span id="timerMiniValue">03:00</span>
+</div>
+
+<div class="container">
+
+  <header>
+    <h1>📘 Bài tập về nhà – Chủ thể của nền kinh tế</h1>
+    <p>Chủ đề: "Người tiêu dùng thông minh trong thời đại thương mại điện tử" • GDKT &amp; PL 10</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="badge">SẢN PHẨM</span> Sơ đồ tư duy: Các chủ thể của nền kinh tế</h2>
+    <div class="mindmap-preview">
+      <img id="mindmap-img" src="https://i.postimg.cc/8P87sZJk/IMG-1146.png"
+           alt="Sơ đồ tư duy" onclick="openMindmapFull()">
+      <p class="mindmap-caption-note">🖱️ Bấm vào ảnh để xem toàn màn hình</p>
+    </div>
+  </section>
+
+  <!-- ================= NHIỆM VỤ 1 ================= -->
+  <section class="card" id="quiz-section">
+    <h2><span class="badge">NHIỆM VỤ 1</span> Đọc thông tin và trả lời câu hỏi</h2>
+
+    <div class="quiz-wrapper" id="quizWrapper">
+
+      <div class="info">
+        <strong>Thông tin 1:</strong> Bạn V là học sinh THPT. Hằng tuần V phụ giúp bố mẹ làm đồ mây tre đan để bán. Những dịp có hội chợ do địa phương tổ chức, V cùng bố mẹ mang các sản phẩm của gia đình đến hội chợ để bán. V thường xuyên bàn bạc với bố mẹ cách sản xuất sản phẩm mây tre đan đẹp mắt, phù hợp với nhu cầu và giá cả.
+      </div>
+
+      <div class="quiz-group">
+        <div class="q" data-correct="A">
+          <div class="q-text">Câu 1: Trong thông tin trên, bố mẹ bạn V tham gia nền kinh tế với tư cách là chủ thể</div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q1" value="A"><span><b>A.</b> sản xuất.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><b>B.</b> Nhà nước.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><b>C.</b> tiêu dùng.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><b>D.</b> tiêu thụ.</span></label>
+          </div>
+          <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="q" data-correct="C">
+          <div class="q-text">Câu 2: Hoạt động nào dưới đây của bố mẹ bạn V đã góp phần đưa sản phẩm đến tay người tiêu dùng?</div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q2" value="A"><span><b>A.</b> Làm đồ mây tre đan bán.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><b>B.</b> Sản phẩm đẹp và phù hợp.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><b>C.</b> Giới thiệu sản phẩm tại hội chợ.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><b>D.</b> Giá cả phù hợp người tiêu dùng.</span></label>
+          </div>
+          <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+          <div class="feedback"></div>
+        </div>
+      </div>
+
+      <div class="info">
+        <strong>Thông tin 2:</strong> Doanh nghiệp T đã đứng ra "giải cứu" nông dân: kêu gọi nhân viên trong công ty mua hàng, kết nối với các siêu thị để bao tiêu một phần nông sản, khuyến mại cho khách hàng mua số lượng lớn. Nhờ đó, một phần lớn nông sản của địa phương X đã được bán kịp thời.
+      </div>
+
+      <div class="quiz-group">
+        <div class="q" data-correct="D">
+          <div class="q-text">Câu 1: Hoạt động nào dưới đây của doanh nghiệp T <u>không</u> góp phần trực tiếp vào việc giúp nông dân tiêu thụ sản phẩm?</div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q3" value="A"><span><b>A.</b> Kết nối với các siêu thị.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><b>B.</b> Kêu gọi nhân viên mua hàng.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><b>C.</b> Khuyến mại cho khách hàng.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><b>D.</b> Ép giá đối với người nông dân.</span></label>
+          </div>
+          <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="q" data-correct="C">
+          <div class="q-text">Câu 2: Doanh nghiệp T đóng vai trò là chủ thể</div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q4" value="A"><span><b>A.</b> sản xuất.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><b>B.</b> tiêu dùng.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><b>C.</b> trung gian.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><b>D.</b> nhà nước.</span></label>
+          </div>
+          <button class="btn btn-check" onclick="checkMCQ(this)">Kiểm tra</button>
+          <div class="feedback"></div>
+        </div>
+      </div>
+
+      <div class="info">
+        <strong>Thông tin 3:</strong> Hệ thống siêu thị A làm cầu nối giữa người sản xuất và người tiêu dùng, đảm bảo mang đến sản phẩm chất lượng tốt nhất. Siêu thị còn có chương trình giới thiệu sản phẩm, khuyến mãi, chăm sóc khách hàng chu đáo.
+      </div>
+      <p class="sub">👉 Chọn <b>Đ</b> hoặc <b>S</b>:</p>
+
+      <div class="quiz-group">
+        <div class="tf-row" data-correct="D">
+          <div class="tf-text"><b>A.</b> Siêu thị A là chủ thể trung gian trong hoạt động sản xuất kinh doanh.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="D">
+          <div class="tf-text"><b>B.</b> Siêu thị A đã làm tốt hoạt động phân phối sản phẩm.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="D">
+          <div class="tf-text"><b>C.</b> Việc làm của siêu thị A thể hiện trách nhiệm của chủ thể kinh tế và trách nhiệm xã hội của doanh nghiệp.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="S">
+          <div class="tf-text"><b>D.</b> Trong nền kinh tế thị trường, mô hình siêu thị gắn liền với vai trò của chủ thể nhà nước.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+
+      <div class="info">
+        <strong>Thông tin 4:</strong> Doanh nghiệp H chuyên bán máy tính. Ngoài mục tiêu lợi nhuận, doanh nghiệp có chương trình giảm giá cho học sinh, sinh viên. Vào dịp khai giảng, doanh nghiệp kết nối với các đơn vị tài chính uy tín để bán trả góp, giảm giá cho sinh viên khó khăn có thành tích tốt.
+      </div>
+      <p class="sub">👉 Chọn <b>Đ</b> hoặc <b>S</b>:</p>
+
+      <div class="quiz-group">
+        <div class="tf-row" data-correct="S">
+          <div class="tf-text"><b>A.</b> Doanh nghiệp H vừa là chủ thể sản xuất vừa là chủ thể trung gian.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="D">
+          <div class="tf-text"><b>B.</b> Các đơn vị tài chính uy tín mà doanh nghiệp H kết nối có vai trò là chủ thể trung gian.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="S">
+          <div class="tf-text"><b>C.</b> Việc sinh viên được mua máy tính lãi suất 0 đồng thể hiện vai trò quản lý nền kinh tế của chủ thể nhà nước.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+        <div class="tf-row" data-correct="D">
+          <div class="tf-text"><b>D.</b> Doanh nghiệp H thực hiện tốt vai trò chủ thể kinh doanh và trách nhiệm xã hội của mình.</div>
+          <div class="tf-btns">
+            <button class="tf-btn" onclick="checkTF(this,'D')">Đ</button>
+            <button class="tf-btn" onclick="checkTF(this,'S')">S</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      </div>
+
+    </div><!-- /quiz-wrapper -->
+
+    <div class="scorebar">
+      <span id="score">Điểm: 0 / 12</span>
+      <span id="progress">Đã làm: 0 / 12</span>
+      <button class="btn btn-history" onclick="openHistory()">📊 Lịch sử &amp; Xếp hạng</button>
+      <button class="btn btn-shuffle" onclick="shuffleAndReset()">🔄 Đảo &amp; Làm lại</button>
+    </div>
+  </section>
+
+  <!-- ================= NHIỆM VỤ 3 & 4 (gọn) ================= -->
+  <section class="card">
+    <h2><span class="badge">NHIỆM VỤ 3</span> Nhận xét trách nhiệm công dân</h2>
+    <div class="q">
+      <div class="q-text">1/ Anh V đã thể hiện trách nhiệm công dân khi tham gia hoạt động kinh tế như thế nào?</div>
+      <textarea placeholder="Viết nhận xét..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        • Chủ động tổ chức sản xuất – kinh doanh, tạo việc làm và thu nhập.<br>
+        • Thực hiện đúng pháp luật về đăng ký kinh doanh, nộp thuế, bảo vệ môi trường.<br>
+        • Sản xuất hàng hoá chất lượng, không làm hàng giả – hàng nhái.
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-text">2/ Em có suy nghĩ gì từ câu chuyện lập nghiệp của anh V?</div>
+      <textarea placeholder="Viết suy nghĩ..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        • Khâm phục tinh thần dám nghĩ, dám làm, không ngại khó khăn.<br>
+        • Cần có kiến thức, kỹ năng, kiên trì và đạo đức kinh doanh.<br>
+        • Học sinh cần học tập tốt, quý trọng đồng tiền và lao động chân chính.
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="badge">NHIỆM VỤ 4</span> Xử lý tình huống</h2>
+    <div class="q">
+      <div class="q-text">
+        1. T rủ H ra siêu thị mua 5 kg củ cải về ăn dần nhưng bị ngăn lại: "Nhà chỉ có hai mẹ con, cậu mua nhiều củ cải làm gì?".<br>
+        <span style="color:var(--primary-dark)">Nếu em là T thì em sẽ nói gì với H?</span>
+      </div>
+      <textarea placeholder="Cách xử lý..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        "Mua củ cải không chỉ để ăn mà còn là cách mình chung tay giúp bà con nông dân tiêu thụ nông sản. Mình có thể chế biến nhiều món, bảo quản trong tủ lạnh, hoặc chia sẻ cho họ hàng."
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-text">
+        2. Chị P báo tin có công ty môi giới việc làm trên mạng giới thiệu chị làm nhân viên siêu thị X với lệ phí 300.000 đồng.<br>
+        <span style="color:var(--primary-dark)">Nếu là K, em sẽ nói gì với chị P?</span>
+      </div>
+      <textarea placeholder="Cách xử lý..."></textarea>
+      <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleSuggest(this)">💡 Xem gợi ý</button>
+      <div class="suggest">
+        "Chị hãy bình tĩnh và tìm hiểu kỹ. Có nhiều công ty môi giới 'ma' lừa đảo."<br>
+        • Kiểm tra pháp nhân, xác minh với siêu thị X.<br>
+        • Không nộp phí trước khi ký hợp đồng chính thức.<br>
+        • Không cung cấp CCCD, OTP cho người lạ.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================================
+     OVERLAY ĐỒNG HỒ GIỮA MÀN HÌNH
+     ============================================================ -->
+<div class="timer-overlay show" id="timerOverlay">
+  <div class="timer-overlay-box" id="timerBox">
+
+    <!-- STATE 1: START -->
+    <div id="stateStart">
+      <span class="to-icon">⏱️</span>
+      <div class="to-title">Sẵn sàng làm bài?</div>
+      <div class="to-subtitle">Bạn có <strong>3 phút</strong> để hoàn thành <strong>12 câu hỏi</strong></div>
+      <div class="timer-big" id="timerBigStart">03:00</div>
+      <button class="btn-start-big" onclick="startQuiz()">▶ BẮT ĐẦU</button>
+    </div>
+
+    <!-- STATE 2: END -->
+    <div id="stateEnd" style="display:none;">
+      <span class="to-icon" id="endIcon">⏰</span>
+      <div class="to-title" id="endTitle">Đã hết thời gian!</div>
+      <div class="to-subtitle" id="endSubtitle">Bài làm đã được tự động nộp</div>
+
+      <div class="score-final">
+        <span class="num" id="endScore">0</span>
+        <span class="total">/ 12</span>
+      </div>
+
+      <div class="evaluation" id="endEval">XẾP LOẠI</div>
+      <div class="eval-msg" id="endMsg"></div>
+
+      <div class="badges-earned" id="endBadges"></div>
+
+      <div class="end-buttons">
+        <button class="btn-end btn-restart" onclick="shuffleAndReset()">🔄 Đảo &amp; Làm lại</button>
+        <button class="btn-end btn-history-end" onclick="openHistory()">📊 Xếp hạng</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODAL LỊCH SỬ ================= -->
+<div class="modal" id="historyModal" onclick="if(event.target===this)closeHistory()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📊 Lịch sử &amp; Xếp hạng</h3>
+      <button class="modal-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="stat-cards" id="statCards"></div>
+      <div class="rank-title">🏆 Top 5 điểm cao nhất</div>
+      <div id="rankContent"></div>
+      <div class="rank-title">🕓 Lịch sử gần đây</div>
+      <div id="historyContent"></div>
+      <div class="modal-footer">
+        <button class="btn-danger" onclick="clearHistory()">🗑️ Xoá lịch sử</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="mindmap-lightbox" onclick="closeMindmapFull()">
+  <button class="lightbox-close" onclick="closeMindmapFull()">✕</button>
+  <img id="lightbox-img" src="" alt="Zoom" onclick="event.stopPropagation()">
+</div>
+
+<script>
+  /* ============================================================
+     CẤU HÌNH
+     ============================================================ */
+  const TOTAL_QUESTIONS = 12;
+  const TIME_LIMIT = 180; // 3 phút
+  const STORAGE_KEY = 'gdktpl10_quiz_history_v3';
+
+  let gameState = 'start'; // 'start' | 'running' | 'ended'
+  let answered = {};
+  let remainingSeconds = TIME_LIMIT;
+  let elapsedSeconds = 0;
+  let countdownInterval = null;
+
+  const overlay = document.getElementById('timerOverlay');
+  const stateStart = document.getElementById('stateStart');
+  const stateEnd = document.getElementById('stateEnd');
+  const timerBigStart = document.getElementById('timerBigStart');
+  const timerMini = document.getElementById('timerMini');
+  const timerMiniValue = document.getElementById('timerMiniValue');
+  const quizWrapper = document.getElementById('quizWrapper');
+
+  /* ============================================================
+     ĐỊNH NGHĨA HUY HIỆU
+     ============================================================ */
+  const BADGES = {
+    perfect:     { icon:'🏆', label:'Hoàn hảo' },
+    excellent:   { icon:'🌟', label:'Xuất sắc' },
+    fast:        { icon:'⚡', label:'Nhanh như chớp' },
+    speed:       { icon:'🔥', label:'Thần tốc' },
+    master:      { icon:'🧠', label:'Bậc thầy' },
+    hardworking: { icon:'💪', label:'Cần cố gắng' },
+    survivor:    { icon:'⏰', label:'Vượt thời gian' }
+  };
+
+  function calculateBadges(score, seconds, timeUp){
+    const earned = [];
+    if(score === TOTAL_QUESTIONS) earned.push('perfect');
+    if(score >= 10) earned.push('excellent');
+    if(seconds < 60 && score >= 6) earned.push('fast');
+    if(score >= 10 && seconds < 120) earned.push('speed');
+    if(score === TOTAL_QUESTIONS && seconds < 120) earned.push('master');
+    if(score < 6) earned.push('hardworking');
+    if(!timeUp) earned.push('survivor');
+    return [...new Set(earned)];
+  }
+
+  /* ============================================================
+     ĐÁNH GIÁ THEO ĐIỂM
+     ============================================================ */
+  function getEvaluation(score){
+    if(score === 12) return {
+      cls:'eval-perfect', text:'🏆 HOÀN HẢO!',
+      msg:'Tuyệt vời! Em là bậc thầy về chủ thể kinh tế!'
+    };
+    if(score >= 10) return {
+      cls:'eval-excellent', text:'🌟 XUẤT SẮC!',
+      msg:'Rất giỏi! Em đã nắm vững kiến thức về các chủ thể kinh tế.'
+    };
+    if(score >= 8) return {
+      cls:'eval-good', text:'👍 KHÁ TỐT!',
+      msg:'Cố gắng thêm chút nữa để đạt điểm tối đa nhé!'
+    };
+    if(score >= 6) return {
+      cls:'eval-average', text:'📖 TRUNG BÌNH',
+      msg:'Em cần đọc lại sơ đồ tư duy và phần lý thuyết để nắm chắc hơn.'
+    };
+    return {
+      cls:'eval-low', text:'💪 CẦN CỐ GẮNG',
+      msg:'Hãy xem lại gợi ý ở Nhiệm vụ 3, 4 và thử lại một lần nữa nhé!'
+    };
+  }
+
+  /* ============================================================
+     ĐỒNG HỒ
+     ============================================================ */
+  function formatTime(sec){
+    sec = Math.max(0, Math.floor(sec));
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  function updateTimerUI(){
+    const txt = formatTime(remainingSeconds);
+    timerMiniValue.textContent = txt;
+    timerBigStart.textContent = txt;
+
+    timerMini.classList.remove('warning','danger');
+    if(remainingSeconds <= 30) timerMini.classList.add('danger');
+    else if(remainingSeconds <= 60) timerMini.classList.add('warning');
+  }
+
+  function startQuiz(){
+    if(gameState === 'running') return;
+
+    gameState = 'running';
+    remainingSeconds = TIME_LIMIT;
+    elapsedSeconds = 0;
+    answered = {};
+    updateScore();
+
+    // Hide overlay
+    overlay.classList.remove('show');
+
+    // Show mini timer + enable quiz
+    setTimeout(() => {
+      timerMini.classList.add('show');
+      quizWrapper.classList.remove('quiz-locked');
+      enableAllInputs();
+      updateTimerUI();
+    }, 400);
+
+    // Start countdown
+    countdownInterval = setInterval(tick, 1000);
+  }
+
+  function tick(){
+    remainingSeconds--;
+    elapsedSeconds++;
+    updateTimerUI();
+
+    if(remainingSeconds <= 0){
+      remainingSeconds = 0;
+      updateTimerUI();
+      endQuiz(true);
+    }
+  }
+
+  function endQuiz(timeUp){
+    if(gameState === 'ended') return;
+    gameState = 'ended';
+
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+    timerMini.classList.remove('show','warning','danger');
+    disableAllInputs();
+
+    const right = Object.values(answered).filter(Boolean).length;
+    showEndOverlay(right, timeUp);
+    saveResult(right, elapsedSeconds, timeUp ? 'timeup' : 'completed');
+  }
+
+  function showEndOverlay(score, timeUp){
+    const eval_ = getEvaluation(score);
+    const badges = calculateBadges(score, elapsedSeconds, timeUp);
+
+    // Set content
+    document.getElementById('endIcon').textContent = timeUp ? '⏰' : '🎉';
+    document.getElementById('endTitle').textContent = timeUp ? 'Đã hết thời gian!' : 'Hoàn thành bài làm!';
+    document.getElementById('endSubtitle').textContent = timeUp
+      ? 'Bài làm đã được tự động nộp'
+      : 'Em đã hoàn thành tất cả 12 câu hỏi';
+    document.getElementById('endScore').textContent = score;
+    document.getElementById('endEval').textContent = eval_.text;
+    document.getElementById('endEval').className = 'evaluation ' + eval_.cls;
+    document.getElementById('endMsg').textContent = eval_.msg;
+
+    // Render badges
+    const badgesEl = document.getElementById('endBadges');
+    if(badges.length === 0){
+      badgesEl.innerHTML = '<div style="opacity:.6;font-size:.9rem;">Chưa đạt huy hiệu nào — hãy thử lại nhé!</div>';
+    } else {
+      badgesEl.innerHTML = badges.map(k => {
+        const b = BADGES[k];
+        return `<span class="achievement"><span class="ic">${b.icon}</span>${b.label}</span>`;
+      }).join('');
+    }
+
+    // Switch state and show overlay
+    stateStart.style.display = 'none';
+    stateEnd.style.display = 'block';
+    overlay.classList.add('show');
+  }
+
+  function showStartOverlay(){
+    stateStart.style.display = 'block';
+    stateEnd.style.display = 'none';
+    timerBigStart.textContent = formatTime(TIME_LIMIT);
+    overlay.classList.add('show');
+  }
+
+  /* ============================================================
+     LOCK / UNLOCK QUIZ
+     ============================================================ */
+  function enableAllInputs(){
+    const section = document.getElementById('quiz-section');
+    section.querySelectorAll('input[type=radio]').forEach(r => r.disabled = false);
+    section.querySelectorAll('.tf-btn').forEach(b => b.disabled = false);
+    section.querySelectorAll('.btn-check').forEach(b => b.disabled = false);
+  }
+  function disableAllInputs(){
+    const section = document.getElementById('quiz-section');
+    section.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+    section.querySelectorAll('.tf-btn').forEach(b => b.disabled = true);
+    section.querySelectorAll('.btn-check').forEach(b => b.disabled = true);
+  }
+
+  /* ============================================================
+     SHUFFLE
+     ============================================================ */
+  function shuffleArray(arr){
+    const a = [...arr];
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function shuffleGroup(groupEl){
+    const questions = Array.from(groupEl.children).filter(
+      el => el.classList.contains('q') || el.classList.contains('tf-row')
+    );
+    const shuffledQuestions = shuffleArray(questions);
+    shuffledQuestions.forEach(q => groupEl.appendChild(q));
+
+    shuffledQuestions.forEach((q, idx) => {
+      if(q.classList.contains('q')){
+        const optsContainer = q.querySelector('.opts');
+        if(!optsContainer) return;
+        const options = Array.from(optsContainer.querySelectorAll('.opt'));
+        const shuffledOptions = shuffleArray(options);
+        shuffledOptions.forEach((opt, i) => {
+          const labelLetter = String.fromCharCode(65 + i);
+          const b = opt.querySelector('span b');
+          if(b) b.textContent = labelLetter + '.';
+          optsContainer.appendChild(opt);
+        });
+        optsContainer.classList.add('shuffling');
+        q.classList.add('shuffling');
+        setTimeout(() => {
+          optsContainer.classList.remove('shuffling');
+          q.classList.remove('shuffling');
+        }, 500);
+      }
+
+      if(q.classList.contains('tf-row')){
+        const labelLetter = String.fromCharCode(65 + (idx % 4));
+        const b = q.querySelector('.tf-text b');
+        if(b) b.textContent = labelLetter + '.';
+        q.classList.add('shuffling');
+        setTimeout(() => q.classList.remove('shuffling'), 500);
+      }
+    });
+  }
+
+  /* ============================================================
+     ĐẢO & RESET
+     ============================================================ */
+  function shuffleAndReset(){
+    // Shuffle
+    document.querySelectorAll('.quiz-group').forEach(g => shuffleGroup(g));
+
+    // Reset state
+    answered = {};
+    remainingSeconds = TIME_LIMIT;
+    elapsedSeconds = 0;
+    gameState = 'start';
+
+    // Clear timer
+    if(countdownInterval){ clearInterval(countdownInterval); countdownInterval = null; }
+    timerMini.classList.remove('show','warning','danger');
+
+    // Reset UI
+    const section = document.getElementById('quiz-section');
+    section.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+    section.querySelectorAll('.opt').forEach(o => o.classList.remove('right','wrong'));
+    section.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('picked-right','picked-wrong'));
+    section.querySelectorAll('.feedback').forEach(fb => { fb.textContent = ''; fb.className = 'feedback'; });
+    section.querySelectorAll('.tf-row').forEach(row => delete row.dataset.id);
+
+    // Lock quiz + reset score
+    quizWrapper.classList.add('quiz-locked');
+    updateScore();
+
+    // Show start overlay
+    showStartOverlay();
+
+    // Scroll to top
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  /* ============================================================
+     CHECK MCQ / TF
+     ============================================================ */
+  function checkMCQ(btn){
+    if(gameState !== 'running') return;
+
+    const box = btn.closest('.q');
+    const correct = box.dataset.correct;
+    const picked = box.querySelector('input[type=radio]:checked');
+    const fb = box.querySelector('.feedback');
+
+    if(!picked){
+      fb.textContent = '⚠️ Em chưa chọn đáp án nào!';
+      fb.className = 'feedback warn';
+      return;
+    }
+
+    box.querySelectorAll('.opt').forEach(o => o.classList.remove('right','wrong'));
+    const key = box.querySelector('input').name;
+    const isRight = (picked.value === correct);
+
+    const correctOpt = [...box.querySelectorAll('.opt')].find(
+      o => o.querySelector('input').value === correct
+    );
+    const correctLabelEl = correctOpt.querySelector('span b');
+    const correctLabel = correctLabelEl ? correctLabelEl.textContent.trim() : correct;
+    const correctTextFull = correctOpt.querySelector('span').textContent.replace(correctLabel,'').trim();
+
+    if(isRight){
+      picked.closest('.opt').classList.add('right');
+      fb.textContent = '✅ Chính xác!';
+      fb.className = 'feedback ok';
+    } else {
+      picked.closest('.opt').classList.add('wrong');
+      correctOpt.classList.add('right');
+      fb.textContent = '❌ Chưa đúng. Đáp án đúng: ' + correctLabel + ' ' + correctTextFull;
+      fb.className = 'feedback no';
+    }
+
+    answered[key] = isRight;
+    updateScore();
+  }
+
+  function checkTF(btn, val){
+    if(gameState !== 'running') return;
+
+    const row = btn.closest('.tf-row');
+    const correct = row.dataset.correct;
+    const fb = row.querySelector('.feedback');
+
+    row.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('picked-right','picked-wrong'));
+    const isRight = (val === correct);
+    btn.classList.add(isRight ? 'picked-right' : 'picked-wrong');
+
+    fb.textContent = isRight ? '✅ Đúng!' : '❌ Sai. Đáp án đúng: ' + (correct === 'D' ? 'Đúng' : 'Sai') + '.';
+    fb.className = 'feedback ' + (isRight ? 'ok' : 'no');
+
+    if(!row.dataset.id){
+      row.dataset.id = 'tf_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    }
+    answered[row.dataset.id] = isRight;
+    updateScore();
+  }
+
+  function updateScore(){
+    const done = Object.keys(answered).length;
+    const right = Object.values(answered).filter(Boolean).length;
+
+    document.getElementById('score').textContent = 'Điểm: ' + right + ' / ' + TOTAL_QUESTIONS;
+    document.getElementById('progress').textContent = 'Đã làm: ' + done + ' / ' + TOTAL_QUESTIONS;
+
+    // Nếu hoàn thành hết trước khi hết giờ → kết thúc luôn
+    if(done >= TOTAL_QUESTIONS && gameState === 'running'){
+      endQuiz(false);
+    }
+  }
+
+  /* ============================================================
+     LƯU LỊCH SỬ
+     ============================================================ */
+  function loadHistory(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveHistory(list){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    catch(e){ console.warn(e); }
+  }
+  function saveResult(score, seconds, mode){
+    const list = loadHistory();
+    const badges = calculateBadges(score, seconds, mode === 'timeup');
+    list.push({
+      id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      score, total: TOTAL_QUESTIONS, time: seconds,
+      badges, mode, date: new Date().toISOString()
+    });
+    if(list.length > 50) list.splice(0, list.length - 50);
+    saveHistory(list);
+  }
+  function clearHistory(){
+    if(confirm('Xoá toàn bộ lịch sử làm bài?')){
+      localStorage.removeItem(STORAGE_KEY);
+      renderHistory();
+    }
+  }
+
+  /* ============================================================
+     MODAL LỊCH SỬ
+     ============================================================ */
+  function openHistory(){
+    renderHistory();
+    document.getElementById('historyModal').classList.add('show');
+  }
+  function closeHistory(){
+    document.getElementById('historyModal').classList.remove('show');
+  }
+
+  function formatDate(iso){
+    const d = new Date(iso);
+    return String(d.getDate()).padStart(2,'0') + '/' +
+           String(d.getMonth()+1).padStart(2,'0') + ' ' +
+           String(d.getHours()).padStart(2,'0') + ':' +
+           String(d.getMinutes()).padStart(2,'0');
+  }
+
+  function renderHistory(){
+    const list = loadHistory();
+    const statCards = document.getElementById('statCards');
+    const rankEl = document.getElementById('rankContent');
+    const historyEl = document.getElementById('historyContent');
+
+    if(list.length === 0){
+      statCards.innerHTML = '';
+      rankEl.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🏆</div>
+          <p>Chưa có lần làm bài nào.<br>Hãy hoàn thành bài để ghi tên vào bảng xếp hạng!</p>
+        </div>`;
+      historyEl.innerHTML = '';
+      return;
+    }
+
+    const best = Math.max(...list.map(r => r.score));
+    const avg = (list.reduce((s,r) => s + r.score, 0) / list.length).toFixed(1);
+    const fastest = Math.min(...list.map(r => r.time));
+
+    statCards.innerHTML = `
+      <div class="stat-card"><div class="label">Tổng lần làm</div><div class="value">${list.length}</div></div>
+      <div class="stat-card"><div class="label">Cao nhất</div><div class="value">${best}<small>/${TOTAL_QUESTIONS}</small></div></div>
+      <div class="stat-card"><div class="label">Trung bình</div><div class="value">${avg}</div></div>
+      <div class="stat-card"><div class="label">Nhanh nhất</div><div class="value" style="font-size:1.15rem;">${formatTime(fastest)}</div></div>
+    `;
+
+    const ranked = [...list].sort((a,b) =>
+      b.score - a.score || a.time - b.time || new Date(b.date) - new Date(a.date)
+    ).slice(0, 5);
+
+    rankEl.innerHTML = `
+      <table class="rank-table">
+        <thead><tr>
+          <th style="width:50px;">Hạng</th><th>Điểm</th>
+          <th>Huy hiệu</th><th style="width:90px;">Thời gian</th><th style="width:120px;">Ngày</th>
+        </tr></thead>
+        <tbody>
+          ${ranked.map((r,i) => {
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+            const bc = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+            const sc = r.score === TOTAL_QUESTIONS ? 'perfect' : (r.score <= 6 ? 'low' : '');
+            const bs = (r.badges||[]).map(k => `<span title="${BADGES[k].label}">${BADGES[k].icon}</span>`).join('');
+            return `<tr>
+              <td><span class="rank-badge ${bc}">${i+1}</span></td>
+              <td><span class="medal">${medal}</span><span class="score-cell ${sc}">${r.score}/${TOTAL_QUESTIONS}</span></td>
+              <td>${bs || '<span style="color:#94a3b8;font-size:.8rem;">—</span>'}</td>
+              <td class="time-cell">${formatTime(r.time)}</td>
+              <td class="date-cell">${formatDate(r.date)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+
+    const recent = [...list].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+    historyEl.innerHTML = `
+      <table class="rank-table">
+        <thead><tr>
+          <th>Điểm</th><th>Huy hiệu</th>
+          <th style="width:90px;">Thời gian</th><th style="width:120px;">Ngày</th>
+        </tr></thead>
+        <tbody>
+          ${recent.map(r => {
+            const sc = r.score === TOTAL_QUESTIONS ? 'perfect' : (r.score <= 6 ? 'low' : '');
+            const bs = (r.badges||[]).map(k => `<span title="${BADGES[k].label}">${BADGES[k].icon}</span>`).join('');
+            const modeTag = r.mode === 'timeup' ? ' <span style="font-size:.7rem;color:#dc2626;">(hết giờ)</span>' : '';
+            return `<tr>
+              <td><span class="score-cell ${sc}">${r.score}/${TOTAL_QUESTIONS}</span>${modeTag}</td>
+              <td>${bs || '—'}</td>
+              <td class="time-cell">${formatTime(r.time)}</td>
+              <td class="date-cell">${formatDate(r.date)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+  function toggleSuggest(btn){
+    const s = btn.nextElementSibling;
+    s.classList.toggle('show');
+    btn.textContent = s.classList.contains('show') ? '🙈 Ẩn gợi ý' : '💡 Xem gợi ý';
+  }
+  function openMindmapFull(){
+    document.getElementById('lightbox-img').src = document.getElementById('mindmap-img').src;
+    document.getElementById('mindmap-lightbox').classList.add('show');
+  }
+  function closeMindmapFull(){
+    document.getElementById('mindmap-lightbox').classList.remove('show');
+  }
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){ closeMindmapFull(); closeHistory(); }
+  });
+
+  /* ============================================================
+     KHỞI TẠO
+     ============================================================ */
+  // Quiz bị khoá ban đầu
+  quizWrapper.classList.add('quiz-locked');
+  disableAllInputs();
+  updateScore();
+  updateTimerUI();
+</script>
+</body>
+</html>
